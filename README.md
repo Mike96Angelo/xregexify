@@ -149,14 +149,14 @@ console.log(match.domainName); // mail
 
 ### Partials:
 
-word.re
+word.re:
 
 ```
 # word
 [A-Za-z]
 ```
 
-two-words.re
+two-words.re:
 
 ```
 # two words

@@ -7,10 +7,10 @@ var DEFAULT_EXTENSIONS = [
 ];
 
 /**
- * [requireRegex description]
- * @param  {string} filepath    [description]
- * @param  {sting} [parentpath] [description]
- * @return {string}             [description]
+ * Requires and reads in file and xregexifies the contents.
+ * @param  {String} filepath
+ * @param  {String} [parentpath]
+ * @return {String}
  */
 function requireRegex(filepath, parentpath) {
     parentpath = parentpath || '';
@@ -22,16 +22,16 @@ function requireRegex(filepath, parentpath) {
         throw new Error('Cannot find module \'' + filepath + '\'');
     }
 
-    return regexify(filepath, content);
+    return xregexify(filepath, content);
 }
 
 /**
- * [regexify description]
- * @param  {string} filepath [description]
- * @param  {string} content  [description]
- * @return {string}          [description]
+ * Returns a xregexified string of the content.
+ * @param  {String} filepath
+ * @param  {String} content
+ * @return {String}
  */
-function regexify(filepath, content) {
+function xregexify(filepath, content) {
     return content
     .replace(/(^|[^\\])(#.*\n?)/mg, '$1')
     .replace(/(^|[^\\])(\s+)/mg, '$1')
@@ -41,20 +41,20 @@ function regexify(filepath, content) {
 }
 
 /**
- * [require_regex description]
- * @param  {Module} module   [description]
- * @param  {string} filepath [description]
- * @return {void}            [description]
+ * Function that gets registered with node require.
+ * @param  {Module} module   Module to export.
+ * @param  {String} filepath Path to the file to require
+ * @return {void}
  */
 function require_regex(module, filepath) {
     module.exports = requireRegex(filepath);
 }
 
 /**
- * [registerWithRequire description]
- * @param   {object | array}    options
- * @param   {object}            options.extensions
- * @return  {void}              [description]
+ * Registers the given extensions with node require.
+ * @param  {Object|Array} options
+ * @param  {Object.Array} options.extensions
+ * @return {void}
  */
 function registerWithRequire(options) {
     exts = getExtensions(options);
@@ -64,26 +64,21 @@ function registerWithRequire(options) {
 }
 
 /**
- * moduleExport the content
- * @param   {string}    content
- * @returns {string}
+ * Module exports for browserify.
+ * @param   {String} content
+ * @returns {String}
  */
 function moduleExport (content) {
     return 'module.exports = ' + JSON.stringify(content) + ';\n';
 }
 
 /**
- * Takes a set of user-supplied options, and determines which set of file-
- * extensions to run regexify on.
- * @param   {object | array}    options
- * @param   {object}            options.extensions
- * @returns {string[]}
+ * Gets the spesified extensions from `options` or `DEFAULT_EXTENSIONS`.
+ * @param  {Object|Array} options
+ * @param  {Object.Array} options.extensions
+ * @return {Array}
  */
 function getExtensions (options) {
-    /**
-     * The file extensions which are stringified by default.
-     * @type    {string[]}
-     */
     var extensions = DEFAULT_EXTENSIONS;
 
     if (options) {
@@ -103,12 +98,12 @@ function getExtensions (options) {
 }
 
 /**
- * Returns whether the filename ends in a regexifiable extension. Case
- * insensitive.
- * @param   {string} filename
- * @return  {boolean}
+ * Return whether or not the `filename` extension is in `extensions`.
+ * @param  {String}    filename
+ * @param  {String[]}  extensions
+ * @return {Boolean}
  */
-function hasRegexifiableExtension (filename, extensions) {
+function hasExtension (filename, extensions) {
     var file_extension = path.extname(filename).toLowerCase();
 
     return extensions.indexOf(file_extension) > -1;
@@ -123,21 +118,22 @@ function hasRegexifiableExtension (filename, extensions) {
  * - Standard: given file (and optionally options) as arguments a stream is
  *   returned. This follows the standard pattern for browserify transformers.
  *
- * @param   {string}            file
- * @param   {object | array}    options
- * @returns {stream | function} depending on if first argument is string.
+ * @param   {String}          file
+ * @param   {Object|Array}    options
+ * @param   {Object.Array}    options.extensions
+ * @returns {Stream|Function} depending on if first argument is string.
  */
 module.exports = function (file, options) {
 
     /**
      * The function Browserify will use to transform the input.
-     * @param   {string} file
-     * @returns {stream}
+     * @param   {String} file
+     * @returns {Stream}
      */
     function browserifyTransform (file) {
         var extensions = getExtensions(options);
 
-        if (!hasRegexifiableExtension(file, extensions)) {
+        if (!hasExtension(file, extensions)) {
             return through();
         }
         var chunks = [];
@@ -149,7 +145,7 @@ module.exports = function (file, options) {
         var end = function () {
             var contents = Buffer.concat(chunks).toString('utf8');
 
-            this.queue(moduleExport(regexify(file, contents)));
+            this.queue(moduleExport(xregexify(file, contents)));
             this.queue(null);
         };
 
@@ -168,5 +164,4 @@ module.exports = function (file, options) {
 };
 
 module.exports.registerWithRequire = registerWithRequire;
-module.exports.getExtensions       = getExtensions;
 module.exports.DEFAULT_EXTENSIONS  = DEFAULT_EXTENSIONS;

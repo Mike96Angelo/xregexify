@@ -1,6 +1,6 @@
 {
   "name": "xregexify",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A require/browserify plug-in for free-space regular expression files.",
   "main": "xregexify.js",
   "scripts": {
