@@ -36,7 +36,7 @@ function regexify(filepath, content) {
     .replace(/(^|[^\\])(#.*\n?)/mg, '$1')
     .replace(/(^|[^\\])(\s+)/mg, '$1')
     .replace(/\{\{([$_A-Za-z0-9\-.\/]*)\}\}/g, function (match, $1, offset, string) {
-        return requireRegex($1, path.dirname(filepath));
+        return '(?:' + requireRegex($1, path.dirname(filepath)) + ')';
     });
 }
 

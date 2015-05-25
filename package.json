@@ -1,7 +1,7 @@
 {
   "name": "xregexify",
-  "version": "0.0.1",
-  "description": "xregexify browserify transform.",
+  "version": "1.0.0",
+  "description": "A require/browserify plug-in for free-space regular expression files.",
   "main": "xregexify.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
