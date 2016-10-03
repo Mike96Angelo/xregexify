@@ -1,5 +1,10 @@
 # xRegexify #
 
+[![GitHub release](https://img.shields.io/github/release/Mike96angelo/xregexify.svg?maxAge=21600)](https://github.com/Mike96Angelo/xregexify)
+[![npm version](https://img.shields.io/npm/v/xregexify.svg?maxAge=21600)](https://www.npmjs.com/package/xregexify)
+[![npm downloads](https://img.shields.io/npm/dm/xregexify.svg?maxAge=604800)](https://www.npmjs.com/package/xregexify)
+[![npm downloads](https://img.shields.io/npm/dt/xregexify.svg?maxAge=604800)](https://www.npmjs.com/package/xregexify)
+
 A require/browserify plug-in for free-space regular expression files.
 
 ## Installation ##
